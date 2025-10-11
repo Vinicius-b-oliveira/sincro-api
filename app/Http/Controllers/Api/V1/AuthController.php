@@ -109,11 +109,16 @@ class AuthController extends Controller
         );
     }
 
-    public function logout(Request $request)
+    public function logout(LogoutRequest $request): \Illuminate\Http\Response
     {
         $request->user()->currentAccessToken()->delete();
-        RefreshToken::where('user_id', $request->user()->id)->delete();
 
-        return response()->json(['message' => 'Logout realizado com sucesso.'], Response::HTTP_OK);
+        $refreshToken = RefreshToken::where('token', $request->validated('refresh_token'));
+
+        if ($refreshToken) {
+            $refreshToken->delete();
+        }
+
+        return response()->noContent();
     }
 }
