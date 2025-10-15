@@ -25,6 +25,6 @@ class InvitationController extends Controller
             'token'      => Str::uuid(),
         ]);
 
-        return response()->noContent(Response::HTTP_CREATED);
+        return response(null, Response::HTTP_CREATED);
     }
 }
