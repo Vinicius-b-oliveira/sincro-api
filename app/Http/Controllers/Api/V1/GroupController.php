@@ -7,6 +7,7 @@ use App\Http\Requests\Api\V1\Group\StoreGroupRequest;
 use App\Http\Requests\Api\V1\Group\UpdateGroupRequest;
 use App\Http\Resources\V1\Group\GroupResource;
 use App\Models\Group;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -76,6 +77,15 @@ class GroupController extends Controller
         $this->authorize('delete', $group);
 
         $group->delete();
+
+        return response()->noContent();
+    }
+
+    public function removeMember(Request $request, Group $group, User $user)
+    {
+        $this->authorize('removeMember', [$group, $user]);
+
+        $group->members()->detach($user->id);
 
         return response()->noContent();
     }
