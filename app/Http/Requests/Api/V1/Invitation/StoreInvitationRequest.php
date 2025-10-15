@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1\Invitation;
 
+use App\Enums\InvitationStatus;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreInvitationRequest extends FormRequest
@@ -32,6 +33,13 @@ class StoreInvitationRequest extends FormRequest
 
                     if ($group->members()->where('email', $value)->exists()) {
                         $fail('Este usuário já é um membro do grupo.');
+                    }
+                },
+                function ($attribute, $value, $fail) {
+                    $group = $this->route('group');
+
+                    if ($group->invitations()->where('email', $value)->where('status', InvitationStatus::PENDING)->exists()) {
+                        $fail('Já existe um convite pendente para este e-mail neste grupo.');
                     }
                 },
             ],
