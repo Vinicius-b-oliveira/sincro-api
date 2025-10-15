@@ -59,4 +59,19 @@ class GroupPolicy
 
         return $user->id === $group->owner_id || $role === 'admin';
     }
+
+    public function removeMember(User $user, Group $group, User $memberToRemove): bool
+    {
+        if ($user->id === $memberToRemove->id) {
+            return false;
+        }
+
+        if ($memberToRemove->id === $group->owner_id) {
+            return false;
+        }
+
+        $role = $group->members()->where('user_id', $user->id)->first()?->pivot->role;
+
+        return $user->id === $group->owner_id || $role === 'admin';
+    }
 }

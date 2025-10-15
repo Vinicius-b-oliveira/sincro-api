@@ -24,11 +24,11 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('transactions', TransactionController::class);
 
         Route::apiResource('groups', GroupController::class);
+        Route::delete('/groups/{group}/members/{user}', [GroupController::class, 'removeMember']);
 
         Route::post('/groups/{group}/invitations', [InvitationController::class, 'store']);
         Route::get('/invitations/pending', [InvitationController::class, 'pending']);
         Route::post('/invitations/{invitation}/accept', [InvitationController::class, 'accept']);
         Route::post('/invitations/{invitation}/decline', [InvitationController::class, 'decline']);
-
     });
 });
