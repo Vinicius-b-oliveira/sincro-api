@@ -49,4 +49,14 @@ class GroupPolicy
     {
         return $user->id === $group->owner_id;
     }
+
+    /**
+     * Determina se o usuário pode enviar convites para um grupo.
+     */
+    public function sendInvitation(User $user, Group $group): bool
+    {
+        $role = $group->members()->where('user_id', $user->id)->first()?->pivot->role;
+
+        return $user->id === $group->owner_id || $role === 'admin';
+    }
 }

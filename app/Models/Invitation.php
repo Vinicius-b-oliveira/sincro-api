@@ -22,11 +22,17 @@ class Invitation extends Model
         'expires_at' => 'datetime',
     ];
 
+    /**
+     * Define o relacionamento: um Convite pertence a um Grupo.
+     */
     public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);
     }
 
+    /**
+     * Define o relacionamento: um Convite foi feito por um Usuário (inviter).
+     */
     public function inviter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'inviter_id');
