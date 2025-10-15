@@ -27,6 +27,8 @@ Route::prefix('v1')->group(function () {
 
         Route::post('/groups/{group}/invitations', [InvitationController::class, 'store']);
         Route::get('/invitations/pending', [InvitationController::class, 'pending']);
+        Route::post('/invitations/{invitation}/accept', [InvitationController::class, 'accept']);
+        Route::post('/invitations/{invitation}/decline', [InvitationController::class, 'decline']);
 
     });
 });

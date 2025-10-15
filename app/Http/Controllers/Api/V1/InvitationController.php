@@ -9,14 +9,12 @@ use App\Http\Resources\V1\Invitation\InvitationResource;
 use App\Models\Group;
 use App\Models\Invitation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class InvitationController extends Controller
 {
-    /**
-     * Armazena um novo convite para um grupo.
-     */
     public function store(StoreInvitationRequest $request, Group $group)
     {
         $this->authorize('sendInvitation', $group);
@@ -43,5 +41,27 @@ class InvitationController extends Controller
             ->get();
 
         return InvitationResource::collection($invitations);
+    }
+
+    public function accept(Request $request, Invitation $invitation)
+    {
+        $this->authorize('accept', $invitation);
+
+        DB::transaction(function () use ($request, $invitation) {
+            $invitation->group->members()->attach($request->user()->id);
+
+            $invitation->update(['status' => InvitationStatus::ACCEPTED]);
+        });
+
+        return response()->noContent();
+    }
+
+    public function decline(Request $request, Invitation $invitation)
+    {
+        $this->authorize('decline', $invitation);
+
+        $invitation->update(['status' => InvitationStatus::DECLINED]);
+
+        return response()->noContent();
     }
 }
