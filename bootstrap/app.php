@@ -8,6 +8,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -53,8 +54,8 @@ return Application::configure(basePath: dirname(__DIR__))
             ], 401);
         });
 
-        $exceptions->render(function (AuthorizationException $e, Request $request) {
-            $message = !empty($e->getMessage())
+        $exceptions->render(function (AuthorizationException|AccessDeniedHttpException $e, Request $request) {
+            $message = ($e->getMessage() && $e->getMessage() !== 'This action is unauthorized.')
                 ? $e->getMessage()
                 : __('errors.unauthorized');
 

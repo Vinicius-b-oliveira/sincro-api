@@ -7,7 +7,7 @@ use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Requests\Api\V1\Auth\LogoutRequest;
 use App\Http\Requests\Api\V1\Auth\RefreshTokenRequest;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
-use App\Http\Resources\V1\AuthResource;
+use App\Http\Resources\V1\Auth\AuthResource;
 use App\Models\RefreshToken;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;

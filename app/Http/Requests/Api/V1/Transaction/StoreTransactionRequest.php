@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api\V1;
+namespace App\Http\Requests\Api\V1\Transaction;
 
 use App\Enums\TransactionType;
 use Illuminate\Foundation\Http\FormRequest;

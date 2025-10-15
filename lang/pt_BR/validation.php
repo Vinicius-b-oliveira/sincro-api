@@ -177,6 +177,12 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'email' => [
+            'unique' => 'O E-mail digitado já está em uso',
+        ],
+        'password' => [
+            'confirmed' => 'As senhas não são iguais',
+        ],
     ],
 
     /*
