@@ -12,29 +12,43 @@ class Group extends Model
 {
     use HasFactory;
 
-    /**
-     * Os atributos que podem ser preenchidos em massa. Essencial para segurança.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'owner_id',
         'name',
         'description',
     ];
 
+    /**
+     * Define o relacionamento: Um Grupo tem um "dono" (User).
+     */
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
+    /**
+     * Define o relacionamento: Um Grupo tem muitos membros (Users).
+     */
     public function members(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'group_user');
+        return $this->belongsToMany(User::class, 'group_user')
+            ->withPivot('role')
+            ->withTimestamps();
     }
 
+    /**
+     * Define o relacionamento: Um Grupo pode ter muitas transações.
+     */
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    /**
+     * Define o relacionamento: Um Grupo pode ter muitos convites associados a ele.
+     */
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(Invitation::class);
     }
 }
