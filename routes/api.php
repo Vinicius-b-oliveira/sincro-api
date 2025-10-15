@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\GroupController;
 use App\Http\Controllers\Api\V1\TransactionController;
 use App\Http\Resources\V1\UserResource;
 use Illuminate\Http\Request;
@@ -20,5 +21,7 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::apiResource('transactions', TransactionController::class);
+
+        Route::apiResource('groups', GroupController::class);
     });
 });
