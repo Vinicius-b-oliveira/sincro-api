@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Group\StoreGroupRequest;
 use App\Http\Requests\Api\V1\Group\UpdateGroupRequest;
+use App\Http\Requests\Api\V1\Group\UpdateMemberRoleRequest;
 use App\Http\Resources\V1\Group\GroupResource;
 use App\Http\Resources\V1\Member\MemberResource;
 use App\Models\Group;
@@ -98,5 +99,16 @@ class GroupController extends Controller
         $members = $group->members()->paginate();
 
         return MemberResource::collection($members);
+    }
+
+    public function updateMemberRole(UpdateMemberRoleRequest $request, Group $group, User $user)
+    {
+        $this->authorize('updateMemberRole', [$group, $user]);
+
+        $group->members()->updateExistingPivot($user->id, [
+            'role' => $request->validated('role'),
+        ]);
+
+        return response()->noContent();
     }
 }
