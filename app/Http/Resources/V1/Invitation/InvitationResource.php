@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Resources\V1;
+namespace App\Http\Resources\V1\Invitation;
 
+use App\Http\Resources\V1\Group\GroupResource;
+use App\Http\Resources\V1\User\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class GroupResource extends JsonResource
+class InvitationResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +18,9 @@ class GroupResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
-            'owner' => new UserResource($this->whenLoaded('owner')),
-            'members_count' => $this->members()->count(),
+            'status' => $this->status->value,
+            'group' => new GroupResource($this->whenLoaded('group')),
+            'inviter' => new UserResource($this->whenLoaded('inviter')),
             'created_at' => $this->created_at->toIso8601String(),
         ];
     }

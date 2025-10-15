@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Resources\V1;
+namespace App\Http\Resources\V1\Group;
 
+use App\Http\Resources\V1\User\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class GroupResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,7 +18,9 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'email' => $this->email,
+            'description' => $this->description,
+            'owner' => new UserResource($this->whenLoaded('owner')),
+            'members_count' => $this->members()->count(),
             'created_at' => $this->created_at->toIso8601String(),
         ];
     }

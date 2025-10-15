@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\GroupController;
 use App\Http\Controllers\Api\V1\InvitationController;
 use App\Http\Controllers\Api\V1\TransactionController;
-use App\Http\Resources\V1\UserResource;
+use App\Http\Resources\V1\User\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +26,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('groups', GroupController::class);
 
         Route::post('/groups/{group}/invitations', [InvitationController::class, 'store']);
+        Route::get('/invitations/pending', [InvitationController::class, 'pending']);
 
     });
 });

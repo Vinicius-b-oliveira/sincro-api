@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Group\StoreGroupRequest;
 use App\Http\Requests\Api\V1\Group\UpdateGroupRequest;
-use App\Http\Resources\V1\GroupResource;
+use App\Http\Resources\V1\Group\GroupResource;
 use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
