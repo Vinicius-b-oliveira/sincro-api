@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Group\StoreGroupRequest;
 use App\Http\Requests\Api\V1\Group\UpdateGroupRequest;
 use App\Http\Resources\V1\Group\GroupResource;
+use App\Http\Resources\V1\Member\MemberResource;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -88,5 +89,14 @@ class GroupController extends Controller
         $group->members()->detach($user->id);
 
         return response()->noContent();
+    }
+
+    public function listMembers(Request $request, Group $group)
+    {
+        $this->authorize('view', $group);
+
+        $members = $group->members()->paginate();
+
+        return MemberResource::collection($members);
     }
 }
