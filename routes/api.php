@@ -26,6 +26,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('groups', GroupController::class);
         Route::delete('/groups/{group}/members/{user}', [GroupController::class, 'removeMember']);
         Route::get('/groups/{group}/members', [GroupController::class, 'listMembers']);
+        Route::patch('/groups/{group}/members/{user}', [GroupController::class, 'updateMemberRole']);
 
         Route::post('/groups/{group}/invitations', [InvitationController::class, 'store']);
         Route::get('/invitations/pending', [InvitationController::class, 'pending']);
