@@ -5,8 +5,6 @@ use App\Http\Controllers\Api\V1\GroupController;
 use App\Http\Controllers\Api\V1\InvitationController;
 use App\Http\Controllers\Api\V1\TransactionController;
 use App\Http\Controllers\Api\V1\UserController;
-use App\Http\Resources\V1\User\UserResource;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
