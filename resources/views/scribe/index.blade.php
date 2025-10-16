@@ -1179,13 +1179,13 @@ fetch(url, {
                                                        class="language-json sl-overflow-x-auto sl-overflow-y-auto">{
     &quot;data&quot;: {
         &quot;user&quot;: {
-            &quot;id&quot;: 16,
+            &quot;id&quot;: 17,
             &quot;name&quot;: &quot;b&quot;,
             &quot;email&quot;: &quot;zbailey@example.net&quot;
         },
         &quot;tokens&quot;: {
-            &quot;access_token&quot;: &quot;6|u6OO11KqoFakusPfqEA3aQ4kFPVPoBbENNg3DLh047f8498b&quot;,
-            &quot;refresh_token&quot;: &quot;vsL8hYRDwiXEP0pGcFfaQPcWHjxGXnDdUlEnrVZzJAKY2KmwwnN7nzausATf&quot;,
+            &quot;access_token&quot;: &quot;7|XrOPloigwyHxYT4Zl1B0ynH28inFyEsrDma2syJMae849926&quot;,
+            &quot;refresh_token&quot;: &quot;q1yempFgt4J8XnsAji7pN1qqH3GooiIgiNW0uHNI1oslB2O9o8687uYZlIXS&quot;,
             &quot;access_token_expires_in&quot;: 3600,
             &quot;refresh_token_expires_in&quot;: 2591999
         }
@@ -4209,7 +4209,7 @@ fetch(url, {
                                             <pre><code style="max-height: 300px;"
                                                        class="language-json sl-overflow-x-auto sl-overflow-y-auto">{
     &quot;data&quot;: {
-        &quot;id&quot;: 10,
+        &quot;id&quot;: 11,
         &quot;name&quot;: &quot;b&quot;,
         &quot;description&quot;: &quot;Eius et animi quos velit et.&quot;,
         &quot;owner&quot;: {
@@ -4219,7 +4219,7 @@ fetch(url, {
             &quot;favorite_group_id&quot;: null,
             &quot;created_at&quot;: &quot;2025-10-16T19:15:36+00:00&quot;
         },
-        &quot;created_at&quot;: &quot;2025-10-16T19:32:32+00:00&quot;
+        &quot;created_at&quot;: &quot;2025-10-16T19:48:39+00:00&quot;
     }
 }</code></pre>
                                                                             </div>
@@ -6825,7 +6825,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        admin
+                        member
                     </div>
                 </div>
             </div>
@@ -7000,7 +7000,7 @@ fetch(url, {
                                      id="json-body-PATCHapi-v1-groups--group_id--members--user_id-"
                                      style="font-family: var(--font-code); font-size: 12px; line-height: var(--lh-code);"
                                 >{
-    "role": "admin"
+    "role": "member"
 }</div>
                             </div>
                                             </div>
@@ -7097,7 +7097,7 @@ You can check the Dev Tools console for debugging information.</p>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"role\": \"admin\"
+    \"role\": \"member\"
 }"
 </code></pre>                                        </div>
                                     </div>
@@ -7117,7 +7117,7 @@ const headers = {
 };
 
 let body = {
-    "role": "admin"
+    "role": "member"
 };
 
 fetch(url, {
@@ -9635,7 +9635,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        expense
+                        income
                     </div>
                 </div>
             </div>
@@ -9662,7 +9662,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        2025-10-16T19:32:32
+                        2025-10-16T19:48:39
                     </div>
                 </div>
             </div>
@@ -9796,8 +9796,8 @@ fetch(url, {
     "title": "b",
     "description": "Eius et animi quos velit et.",
     "amount": 60,
-    "type": "expense",
-    "transaction_date": "2025-10-16T19:32:32"
+    "type": "income",
+    "transaction_date": "2025-10-16T19:48:39"
 }</div>
                             </div>
                                             </div>
@@ -9897,8 +9897,8 @@ You can check the Dev Tools console for debugging information.</p>
     \"title\": \"b\",
     \"description\": \"Eius et animi quos velit et.\",
     \"amount\": 60,
-    \"type\": \"expense\",
-    \"transaction_date\": \"2025-10-16T19:32:32\"
+    \"type\": \"income\",
+    \"transaction_date\": \"2025-10-16T19:48:39\"
 }"
 </code></pre>                                        </div>
                                     </div>
@@ -9921,8 +9921,8 @@ let body = {
     "title": "b",
     "description": "Eius et animi quos velit et.",
     "amount": 60,
-    "type": "expense",
-    "transaction_date": "2025-10-16T19:32:32"
+    "type": "income",
+    "transaction_date": "2025-10-16T19:48:39"
 };
 
 fetch(url, {
@@ -9993,13 +9993,13 @@ fetch(url, {
                                             <pre><code style="max-height: 300px;"
                                                        class="language-json sl-overflow-x-auto sl-overflow-y-auto">{
     &quot;data&quot;: {
-        &quot;id&quot;: 205,
+        &quot;id&quot;: 206,
         &quot;title&quot;: &quot;b&quot;,
         &quot;description&quot;: &quot;Eius et animi quos velit et.&quot;,
         &quot;amount&quot;: &quot;60.00&quot;,
-        &quot;type&quot;: &quot;expense&quot;,
-        &quot;transaction_date&quot;: &quot;2025-10-16T19:32:32+00:00&quot;,
-        &quot;created_at&quot;: &quot;2025-10-16T19:32:32+00:00&quot;
+        &quot;type&quot;: &quot;income&quot;,
+        &quot;transaction_date&quot;: &quot;2025-10-16T19:48:39+00:00&quot;,
+        &quot;created_at&quot;: &quot;2025-10-16T19:48:39+00:00&quot;
     }
 }</code></pre>
                                                                             </div>
@@ -10774,7 +10774,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        expense
+                        income
                     </div>
                 </div>
             </div>
@@ -10801,7 +10801,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        2025-10-16T19:32:32
+                        2025-10-16T19:48:39
                     </div>
                 </div>
             </div>
@@ -10980,8 +10980,8 @@ fetch(url, {
     "title": "b",
     "description": "Eius et animi quos velit et.",
     "amount": 60,
-    "type": "expense",
-    "transaction_date": "2025-10-16T19:32:32"
+    "type": "income",
+    "transaction_date": "2025-10-16T19:48:39"
 }</div>
                             </div>
                                             </div>
@@ -11081,8 +11081,8 @@ You can check the Dev Tools console for debugging information.</p>
     \"title\": \"b\",
     \"description\": \"Eius et animi quos velit et.\",
     \"amount\": 60,
-    \"type\": \"expense\",
-    \"transaction_date\": \"2025-10-16T19:32:32\"
+    \"type\": \"income\",
+    \"transaction_date\": \"2025-10-16T19:48:39\"
 }"
 </code></pre>                                        </div>
                                     </div>
@@ -11105,8 +11105,8 @@ let body = {
     "title": "b",
     "description": "Eius et animi quos velit et.",
     "amount": 60,
-    "type": "expense",
-    "transaction_date": "2025-10-16T19:32:32"
+    "type": "income",
+    "transaction_date": "2025-10-16T19:48:39"
 };
 
 fetch(url, {
