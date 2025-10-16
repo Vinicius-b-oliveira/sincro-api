@@ -9,15 +9,32 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    /**
+     * Get authenticated user's profile
+     *
+     * @group User Profile
+     *
+     * @authenticated
+     *
+     * @responseFromApiResource App\Http\Resources\V1\User\UserResource
+     */
     public function show(Request $request): UserResource
     {
         return new UserResource($request->user());
     }
+
+    /**
+     * Update user preferences
+     *
+     * @group User Profile
+     *
+     * @authenticated
+     *
+     * @responseFromApiResource App\Http\Resources\V1\User\UserResource
+     */
     public function updatePreferences(UpdatePreferencesRequest $request): UserResource
     {
-
         $validated = $request->validated();
-
         $user = $request->user();
 
         $user->update([

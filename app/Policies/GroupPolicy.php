@@ -7,7 +7,6 @@ use App\Models\User;
 
 class GroupPolicy
 {
-
     public function viewAny(User $user): bool
     {
         return true;

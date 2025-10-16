@@ -28,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*')) {
                 return true;
             }
+
             return $request->expectsJson();
         });
 
@@ -43,7 +44,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (AuthenticationException $e, Request $request) {
-            $message = !empty($e->getMessage()) && $e->getMessage() !== 'Unauthenticated.'
+            $message = ! empty($e->getMessage()) && $e->getMessage() !== 'Unauthenticated.'
                 ? $e->getMessage()
                 : __('errors.unauthenticated');
 
@@ -75,9 +76,10 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->renderable(function (\Throwable $e, Request $request) {
-            if (!app()->isProduction()) {
+            if (! app()->isProduction()) {
                 return;
             }
+
             return response()->json([
                 'status' => 500,
                 'error' => 'Internal Server Error',

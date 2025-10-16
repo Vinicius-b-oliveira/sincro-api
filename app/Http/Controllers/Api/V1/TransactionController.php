@@ -13,6 +13,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TransactionController extends Controller
 {
+    /**
+     * List transactions
+     *
+     * @group Transactions
+     *
+     * @authenticated
+     *
+     * @description Returns a paginated list of transactions.
+     * By default, it returns the authenticated user's personal transactions.
+     * If the `group_id` query parameter is provided, it returns all transactions from all members of that group.
+     *
+     * @queryParam group_id integer An optional ID of a group to filter transactions by. Example: 1
+     *
+     * @responseFromApiResource App\Http\Resources\V1\Transaction\TransactionResource
+     */
     public function index(Request $request)
     {
         $request->validate([
@@ -36,6 +51,15 @@ class TransactionController extends Controller
         return TransactionResource::collection($transactions);
     }
 
+    /**
+     * Create a new transaction
+     *
+     * @group Transactions
+     *
+     * @authenticated
+     *
+     * @responseFromApiResource App\Http\Resources\V1\Transaction\TransactionResource status=201
+     */
     public function store(StoreTransactionRequest $request)
     {
         $this->authorize('create', Transaction::class);
@@ -47,6 +71,17 @@ class TransactionController extends Controller
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
+    /**
+     * Get a specific transaction
+     *
+     * @group Transactions
+     *
+     * @authenticated
+     *
+     * @urlParam transaction integer required The ID of the transaction. Example: 1
+     *
+     * @responseFromApiResource App\Http\Resources\V1\Transaction\TransactionResource
+     */
     public function show(Transaction $transaction)
     {
         $this->authorize('view', $transaction);
@@ -54,6 +89,17 @@ class TransactionController extends Controller
         return new TransactionResource($transaction);
     }
 
+    /**
+     * Update a transaction
+     *
+     * @group Transactions
+     *
+     * @authenticated
+     *
+     * @urlParam transaction integer required The ID of the transaction. Example: 1
+     *
+     * @responseFromApiResource App\Http\Resources\V1\Transaction\TransactionResource
+     */
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
         $this->authorize('update', $transaction);
@@ -63,6 +109,17 @@ class TransactionController extends Controller
         return new TransactionResource($transaction);
     }
 
+    /**
+     * Delete a transaction
+     *
+     * @group Transactions
+     *
+     * @authenticated
+     *
+     * @urlParam transaction integer required The ID of the transaction. Example: 1
+     *
+     * @response 204
+     */
     public function destroy(Transaction $transaction)
     {
         $this->authorize('delete', $transaction);

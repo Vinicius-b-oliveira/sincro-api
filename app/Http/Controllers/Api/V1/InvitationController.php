@@ -17,6 +17,17 @@ use Throwable;
 
 class InvitationController extends Controller
 {
+    /**
+     * Send an invitation to a group
+     *
+     * @group Member Management
+     *
+     * @authenticated
+     *
+     * @response status=201
+     *
+     * @throws Throwable
+     */
     public function store(StoreInvitationRequest $request, Group $group)
     {
         $this->authorize('sendInvitation', $group);
@@ -25,13 +36,22 @@ class InvitationController extends Controller
 
         $group->invitations()->create([
             'inviter_id' => $request->user()->id,
-            'email'      => $validated['email'],
-            'token'      => Str::uuid(),
+            'email' => $validated['email'],
+            'token' => Str::uuid(),
         ]);
 
         return response(null, Response::HTTP_CREATED);
     }
 
+    /**
+     * List pending invitations
+     *
+     * @group Member Management
+     *
+     * @authenticated
+     *
+     * @responseFromApiResource App\Http\Resources\V1\Invitation\InvitationResource
+     */
     public function pending(Request $request)
     {
         $user = $request->user();
@@ -46,6 +66,14 @@ class InvitationController extends Controller
     }
 
     /**
+     * Accept a pending invitation
+     *
+     * @group Member Management
+     *
+     * @authenticated
+     *
+     * @response 204
+     *
      * @throws Throwable
      */
     public function accept(Invitation $invitation)
@@ -54,14 +82,21 @@ class InvitationController extends Controller
 
         DB::transaction(function () use ($invitation) {
             $invitation->group->members()->attach(Auth::user()->id);
-
             $invitation->update(['status' => InvitationStatus::ACCEPTED]);
         });
 
         return response()->noContent();
     }
 
-
+    /**
+     * Decline a pending invitation
+     *
+     * @group Member Management
+     *
+     * @authenticated
+     *
+     * @response 204
+     */
     public function decline(Invitation $invitation)
     {
         $this->authorize('decline', $invitation);

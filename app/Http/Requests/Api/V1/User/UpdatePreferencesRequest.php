@@ -24,7 +24,7 @@ class UpdatePreferencesRequest extends FormRequest
 
                         $isMember = $user->groups()->where('group_id', $value)->exists();
 
-                        if (!$isMember) {
+                        if (! $isMember) {
                             $fail('Você só pode favoritar um grupo do qual você é membro.');
                         }
                     }

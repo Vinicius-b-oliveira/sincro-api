@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \App\Models\User $owner
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaction> $transactions
  * @property-read int|null $transactions_count
+ *
  * @method static \Database\Factories\GroupFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Group newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Group newQuery()
@@ -32,6 +33,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Group whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Group whereOwnerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Group whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Group extends Model

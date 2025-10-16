@@ -1,0 +1,9 @@
+[90m= [39m[34;4mApp\Models\Group[39;24m {#6551
+    [34mid[39m: [35m1[39m,
+    [34mowner_id[39m: [35m1[39m,
+    [34mname[39m: "[32mrem id cupiditate[39m",
+    [34mdescription[39m: "[32mCommodi et corporis ut dolorem alias. Enim sunt ducimus non a aliquam inventore eius.[39m",
+    [34mcreated_at[39m: "[32m2025-10-16 13:33:36[39m",
+    [34mupdated_at[39m: "[32m2025-10-16 13:33:36[39m",
+  }
+

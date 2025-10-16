@@ -17,6 +17,7 @@ class GroupSeeder extends Seeder
 
         if ($users->count() < 5) {
             $this->command->info('Não há usuários suficientes para criar grupos de teste. Pulando o GroupSeeder.');
+
             return;
         }
 

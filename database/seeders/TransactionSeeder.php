@@ -14,6 +14,7 @@ class TransactionSeeder extends Seeder
 
         if ($users->isEmpty()) {
             $this->command->info('Nenhum usuário encontrado. Pulando o TransactionSeeder.');
+
             return;
         }
 

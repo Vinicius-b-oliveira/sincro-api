@@ -18,6 +18,15 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
+    /**
+     * Register a new user
+     *
+     * @group Authentication
+     *
+     * @unauthenticated
+     *
+     * @responseFromApiResource App\Http\Resources\V1\Auth\AuthResource status=201
+     */
     public function register(RegisterRequest $request): AuthResource
     {
         $validated = $request->validated();
@@ -34,22 +43,37 @@ class AuthController extends Controller
     }
 
     /**
+     * Authenticate a user (Login)
+     *
+     * @group Authentication
+     *
+     * @unauthenticated
+     *
+     * @responseFromApiResource App\Http\Resources\V1\Auth\AuthResource
+     *
      * @throws AuthenticationException
      */
     public function login(LoginRequest $request): AuthResource
     {
-        if (!Auth::attempt($request->validated())) {
+        if (! Auth::attempt($request->validated())) {
             throw new AuthenticationException('Credenciais inválidas.');
         }
 
         $user = $request->user();
-
         $tokens = $this->generateTokens($user);
 
         return new AuthResource($user, ...$tokens);
     }
 
     /**
+     * Refresh an access token
+     *
+     * @group Authentication
+     *
+     * @unauthenticated
+     *
+     * @responseFromApiResource App\Http\Resources\V1\Auth\AuthResource
+     *
      * @throws AuthenticationException
      */
     public function refreshToken(RefreshTokenRequest $request): AuthResource
@@ -57,7 +81,7 @@ class AuthController extends Controller
         $refreshTokenString = $request->validated('refresh_token');
         $refreshToken = RefreshToken::where('token', $refreshTokenString)->first();
 
-        if (!$refreshToken || $refreshToken->expires_at < now()) {
+        if (! $refreshToken || $refreshToken->expires_at < now()) {
             throw new AuthenticationException('Token de atualização inválido ou expirado.');
         }
 
@@ -69,13 +93,21 @@ class AuthController extends Controller
         return new AuthResource($user, ...$tokens);
     }
 
+    /**
+     * End the current session (Logout)
+     *
+     * @group Authentication
+     *
+     * @authenticated
+     *
+     * @response 204
+     */
     public function logout(LogoutRequest $request): Response
     {
         $user = $request->user();
         $validated = $request->validated();
 
         $user->currentAccessToken()->delete();
-
         RefreshToken::where('token', $validated['refresh_token'])?->delete();
 
         return response()->noContent();

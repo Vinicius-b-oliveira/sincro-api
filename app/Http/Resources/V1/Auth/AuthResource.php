@@ -9,7 +9,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /** @mixin User */
 class AuthResource extends JsonResource
 {
-
     private ?string $accessToken;
 
     private ?string $refreshToken;
@@ -20,10 +19,10 @@ class AuthResource extends JsonResource
 
     public function __construct(
         $resource,
-        string $accessToken = null,
-        string $refreshToken = null,
-        int $accessTokenExpiresIn = null,
-        int $refreshTokenExpiresIn = null
+        ?string $accessToken = null,
+        ?string $refreshToken = null,
+        ?int $accessTokenExpiresIn = null,
+        ?int $refreshTokenExpiresIn = null
     ) {
         parent::__construct($resource);
         $this->accessToken = $accessToken;
