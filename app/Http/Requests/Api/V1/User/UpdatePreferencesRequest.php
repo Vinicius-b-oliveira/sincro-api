@@ -21,9 +21,10 @@ class UpdatePreferencesRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     if ($value) {
                         $user = $this->user();
-                        $group = \App\Models\Group::find($value);
 
-                        if (!$group || !$group->members->contains($user)) {
+                        $isMember = $user->groups()->where('group_id', $value)->exists();
+
+                        if (!$isMember) {
                             $fail('Você só pode favoritar um grupo do qual você é membro.');
                         }
                     }

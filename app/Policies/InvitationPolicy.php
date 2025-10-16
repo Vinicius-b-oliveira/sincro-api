@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Enums\InvitationStatus;
 use App\Models\Invitation;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class InvitationPolicy
 {

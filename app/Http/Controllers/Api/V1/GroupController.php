@@ -11,23 +11,26 @@ use App\Http\Resources\V1\Member\MemberResource;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class GroupController extends Controller
 {
-    /**
-     * Exibe uma lista dos grupos aos quais o usuário pertence.
-     */
+
     public function index(Request $request)
     {
-        $groups = $request->user()->groups()->latest()->paginate();
+        $groups = $request->user()->groups()
+            ->with('owner')
+            ->withCount('members')
+            ->latest()
+            ->paginate();
 
         return GroupResource::collection($groups);
     }
 
     /**
-     * Armazena um novo grupo.
+     * @throws Throwable
      */
     public function store(StoreGroupRequest $request)
     {
@@ -49,9 +52,6 @@ class GroupController extends Controller
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
-    /**
-     * Exibe um grupo específico.
-     */
     public function show(Group $group)
     {
         $this->authorize('view', $group);
@@ -59,9 +59,6 @@ class GroupController extends Controller
         return new GroupResource($group->load('owner'));
     }
 
-    /**
-     * Atualiza um grupo específico.
-     */
     public function update(UpdateGroupRequest $request, Group $group)
     {
         $this->authorize('update', $group);
@@ -71,9 +68,6 @@ class GroupController extends Controller
         return new GroupResource($group);
     }
 
-    /**
-     * Remove um grupo.
-     */
     public function destroy(Group $group)
     {
         $this->authorize('delete', $group);
@@ -83,7 +77,7 @@ class GroupController extends Controller
         return response()->noContent();
     }
 
-    public function removeMember(Request $request, Group $group, User $user)
+    public function removeMember(Group $group, User $user)
     {
         $this->authorize('removeMember', [$group, $user]);
 
@@ -92,7 +86,7 @@ class GroupController extends Controller
         return response()->noContent();
     }
 
-    public function listMembers(Request $request, Group $group)
+    public function listMembers(Group $group)
     {
         $this->authorize('view', $group);
 

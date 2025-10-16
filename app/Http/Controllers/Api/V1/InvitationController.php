@@ -9,9 +9,11 @@ use App\Http\Resources\V1\Invitation\InvitationResource;
 use App\Models\Group;
 use App\Models\Invitation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class InvitationController extends Controller
 {
@@ -21,7 +23,7 @@ class InvitationController extends Controller
 
         $validated = $request->validated();
 
-        $invitation = $group->invitations()->create([
+        $group->invitations()->create([
             'inviter_id' => $request->user()->id,
             'email'      => $validated['email'],
             'token'      => Str::uuid(),
@@ -43,12 +45,15 @@ class InvitationController extends Controller
         return InvitationResource::collection($invitations);
     }
 
-    public function accept(Request $request, Invitation $invitation)
+    /**
+     * @throws Throwable
+     */
+    public function accept(Invitation $invitation)
     {
         $this->authorize('accept', $invitation);
 
-        DB::transaction(function () use ($request, $invitation) {
-            $invitation->group->members()->attach($request->user()->id);
+        DB::transaction(function () use ($invitation) {
+            $invitation->group->members()->attach(Auth::user()->id);
 
             $invitation->update(['status' => InvitationStatus::ACCEPTED]);
         });
@@ -56,7 +61,8 @@ class InvitationController extends Controller
         return response()->noContent();
     }
 
-    public function decline(Request $request, Invitation $invitation)
+
+    public function decline(Invitation $invitation)
     {
         $this->authorize('decline', $invitation);
 

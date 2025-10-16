@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources\V1\Transaction;
 
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/** @mixin Transaction */
 class TransactionResource extends JsonResource
 {
 
