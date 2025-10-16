@@ -2,13 +2,12 @@
 
 namespace App\Policies;
 
-use App\Models\Group;
 use App\Models\Transaction;
 use App\Models\User;
 
 class TransactionPolicy
 {
-    public function viewAny(User $user): bool
+    public function viewAny(): bool
     {
         return true;
     }
@@ -18,7 +17,7 @@ class TransactionPolicy
         return $user->id === $transaction->user_id;
     }
 
-    public function create(User $user): bool
+    public function create(): bool
     {
         return true;
     }

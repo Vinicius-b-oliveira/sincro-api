@@ -9,7 +9,7 @@ use App\Http\Resources\V1\Transaction\TransactionResource;
 use App\Models\Group;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 class TransactionController extends Controller
 {
