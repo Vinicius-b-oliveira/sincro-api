@@ -11,6 +11,7 @@ use App\Http\Resources\V1\Auth\AuthResource;
 use App\Models\RefreshToken;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -27,25 +28,14 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        $accessToken = $user->createToken('auth_token');
-        $refreshToken = RefreshToken::create([
-            'user_id' => $user->id,
-            'token' => Str::random(60),
-            'expires_at' => now()->addDays(30),
-        ]);
+        $tokens = $this->generateTokens($user);
 
-        $accessTokenExpiresIn = config('sanctum.expiration') * 60;
-        $refreshTokenExpiresIn = now()->diffInSeconds($refreshToken->expires_at);
-
-        return new AuthResource(
-            $user,
-            accessToken: $accessToken->plainTextToken,
-            refreshToken: $refreshToken->token,
-            accessTokenExpiresIn: $accessTokenExpiresIn,
-            refreshTokenExpiresIn: $refreshTokenExpiresIn
-        );
+        return new AuthResource($user, ...$tokens);
     }
 
+    /**
+     * @throws AuthenticationException
+     */
     public function login(LoginRequest $request): AuthResource
     {
         if (!Auth::attempt($request->validated())) {
@@ -54,32 +44,17 @@ class AuthController extends Controller
 
         $user = $request->user();
 
-        $user->tokens()->delete();
-        RefreshToken::where('user_id', $user->id)->delete();
+        $tokens = $this->generateTokens($user);
 
-        $accessToken = $user->createToken('auth_token');
-        $refreshToken = RefreshToken::create([
-            'user_id' => $user->id,
-            'token' => Str::random(60),
-            'expires_at' => now()->addDays(30),
-        ]);
-
-        $accessTokenExpiresIn = config('sanctum.expiration') * 60;
-        $refreshTokenExpiresIn = now()->diffInSeconds($refreshToken->expires_at);
-
-        return new AuthResource(
-            $user,
-            accessToken: $accessToken->plainTextToken,
-            refreshToken: $refreshToken->token,
-            accessTokenExpiresIn: $accessTokenExpiresIn,
-            refreshTokenExpiresIn: $refreshTokenExpiresIn
-        );
+        return new AuthResource($user, ...$tokens);
     }
 
+    /**
+     * @throws AuthenticationException
+     */
     public function refreshToken(RefreshTokenRequest $request): AuthResource
     {
         $refreshTokenString = $request->validated('refresh_token');
-
         $refreshToken = RefreshToken::where('token', $refreshTokenString)->first();
 
         if (!$refreshToken || $refreshToken->expires_at < now()) {
@@ -89,35 +64,37 @@ class AuthController extends Controller
         $user = $refreshToken->user;
         $refreshToken->delete();
 
+        $tokens = $this->generateTokens($user);
+
+        return new AuthResource($user, ...$tokens);
+    }
+
+    public function logout(LogoutRequest $request): Response
+    {
+        $user = $request->user();
+        $validated = $request->validated();
+
+        $user->currentAccessToken()->delete();
+
+        RefreshToken::where('token', $validated['refresh_token'])?->delete();
+
+        return response()->noContent();
+    }
+
+    private function generateTokens(User $user): array
+    {
         $accessToken = $user->createToken('auth_token');
-        $newRefreshToken = RefreshToken::create([
+        $refreshToken = RefreshToken::create([
             'user_id' => $user->id,
             'token' => Str::random(60),
             'expires_at' => now()->addDays(30),
         ]);
 
-        $accessTokenExpiresIn = config('sanctum.expiration') * 60;
-        $refreshTokenExpiresIn = now()->diffInSeconds($newRefreshToken->expires_at);
-
-        return new AuthResource(
-            $user,
-            accessToken: $accessToken->plainTextToken,
-            refreshToken: $newRefreshToken->token,
-            accessTokenExpiresIn: $accessTokenExpiresIn,
-            refreshTokenExpiresIn: $refreshTokenExpiresIn
-        );
-    }
-
-    public function logout(LogoutRequest $request): \Illuminate\Http\Response
-    {
-        $request->user()->currentAccessToken()->delete();
-
-        $refreshToken = RefreshToken::where('token', $request->validated('refresh_token'));
-
-        if ($refreshToken) {
-            $refreshToken->delete();
-        }
-
-        return response()->noContent();
+        return [
+            'accessToken' => $accessToken->plainTextToken,
+            'refreshToken' => $refreshToken->token,
+            'accessTokenExpiresIn' => config('sanctum.expiration') * 60,
+            'refreshTokenExpiresIn' => now()->diffInSeconds($refreshToken->expires_at),
+        ];
     }
 }
