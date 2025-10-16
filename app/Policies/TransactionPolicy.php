@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Group;
 use App\Models\Transaction;
 use App\Models\User;
 

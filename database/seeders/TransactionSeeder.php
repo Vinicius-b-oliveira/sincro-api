@@ -18,9 +18,21 @@ class TransactionSeeder extends Seeder
         }
 
         foreach ($users as $user) {
-            Transaction::factory()->count(20)->create([
+            Transaction::factory()->count(10)->create([
                 'user_id' => $user->id,
+                'group_id' => null,
             ]);
+
+            $groups = $user->groups;
+
+            if ($groups->isNotEmpty()) {
+                $randomGroup = $groups->random();
+
+                Transaction::factory()->count(10)->create([
+                    'user_id' => $user->id,
+                    'group_id' => $randomGroup->id,
+                ]);
+            }
         }
     }
 }

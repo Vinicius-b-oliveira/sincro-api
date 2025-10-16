@@ -89,4 +89,10 @@ class GroupPolicy
 
         return $user->id === $group->owner_id || $role === 'admin';
     }
+
+
+    public function viewGroupTransactions(User $user, Group $group): bool
+    {
+        return $group->members()->where('user_id', $user->id)->exists();
+    }
 }
