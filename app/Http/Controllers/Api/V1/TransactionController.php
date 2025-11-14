@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Transaction\ListTransactionRequest;
 use App\Http\Requests\Api\V1\Transaction\StoreTransactionRequest;
 use App\Http\Requests\Api\V1\Transaction\UpdateTransactionRequest;
 use App\Http\Resources\V1\Transaction\TransactionResource;
@@ -14,39 +15,53 @@ use Symfony\Component\HttpFoundation\Response;
 class TransactionController extends Controller
 {
     /**
-     * List transactions
+     * List transactions (Refatorado para filtros)
      *
      * @group Transactions
-     *
      * @authenticated
+     * @description Retorna uma lista paginada de transações do usuário autenticado,
+     * com suporte a filtros avançados.
      *
-     * @description Returns a paginated list of transactions.
-     * By default, it returns the authenticated user's personal transactions.
-     * If the `group_id` query parameter is provided, it returns all transactions from all members of that group.
-     *
-     * @queryParam group_id integer An optional ID of a group to filter transactions by. Example: 1
+     * @queryParam search string Texto para busca no título. Example: "Supermercado"
+     * @queryParam type string 'income' ou 'expense'. Example: "expense"
+     * @queryParam category[] array Categorias para filtrar. Example: ["Alimentação", "Transporte"]
+     * @queryParam group_id[] array IDs de grupo para filtrar. Example: [1, 5]
+     * @queryParam date_start string Data de início (ISO 8601). Example: "2025-01-01"
+     * @queryParam date_end string Data de fim (ISO 8601). Example: "2025-01-31"
      *
      * @responseFromApiResource App\Http\Resources\V1\Transaction\TransactionResource
      */
-    public function index(Request $request)
+    public function index(ListTransactionRequest $request)
     {
-        $request->validate([
-            'group_id' => 'nullable|integer|exists:groups,id',
-        ]);
+        $filters = $request->validated();
 
-        if ($groupId = $request->query('group_id')) {
-            $group = Group::findOrFail($groupId);
+        $query = $request->user()->transactions();
 
-            $this->authorize('viewGroupTransactions', $group);
+        $query->when($filters['search'] ?? null, function ($q, $search) {
+            $q->where('title', 'like', "%{$search}%");
+        });
 
-            $memberIds = $group->members()->pluck('users.id');
+        $query->when($filters['type'] ?? null, function ($q, $type) {
+            $q->where('type', $type);
+        });
 
-            $transactions = Transaction::whereIn('user_id', $memberIds)
-                ->latest()
-                ->paginate();
-        } else {
-            $transactions = $request->user()->transactions()->latest()->paginate();
-        }
+        $query->when($filters['category'] ?? null, function ($q, $categories) {
+            $q->whereIn('category', $categories);
+        });
+
+        $query->when($filters['group_id'] ?? null, function ($q, $groupIds) {
+            $q->whereIn('group_id', $groupIds);
+        });
+
+        $query->when($filters['date_start'] ?? null, function ($q, $dateStart) {
+            $q->where('transaction_date', '>=', $dateStart);
+        });
+
+        $query->when($filters['date_end'] ?? null, function ($q, $dateEnd) {
+            $q->where('transaction_date', '<=', $dateEnd);
+        });
+
+        $transactions = $query->latest('transaction_date')->paginate();
 
         return TransactionResource::collection($transactions);
     }
@@ -71,6 +86,26 @@ class TransactionController extends Controller
         return (new TransactionResource($transaction))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
+    }
+
+    /**
+     * @group Transactions
+     * @authenticated
+     * @description Retorna as transações de TODOS os membros de um grupo específico.
+     *
+     * @urlParam group integer required O ID do grupo.
+     *
+     * @responseFromApiResource App\Http\Resources\V1\Transaction\TransactionResource
+     */
+    public function listGroupTransactions(Request $request, Group $group)
+    {
+        $this->authorize('viewGroupTransactions', $group);
+
+        $transactions = Transaction::where('group_id', $group->id)
+            ->latest('transaction_date')
+            ->paginate();
+
+        return TransactionResource::collection($transactions);
     }
 
     /**

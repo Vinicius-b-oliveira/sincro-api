@@ -24,14 +24,10 @@ class TransactionSeeder extends Seeder
                 'group_id' => null,
             ]);
 
-            $groups = $user->groups;
-
-            if ($groups->isNotEmpty()) {
-                $randomGroup = $groups->random();
-
-                Transaction::factory()->count(10)->create([
+            foreach ($user->groups as $group) {
+                Transaction::factory()->count(rand(3, 7))->create([
                     'user_id' => $user->id,
-                    'group_id' => $randomGroup->id,
+                    'group_id' => $group->id,
                 ]);
             }
         }

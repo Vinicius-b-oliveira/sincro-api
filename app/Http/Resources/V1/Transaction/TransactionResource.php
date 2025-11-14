@@ -20,6 +20,8 @@ class TransactionResource extends JsonResource
 
             'type' => $this->type->value,
 
+            'category' => $this->category,
+
             'transaction_date' => $this->transaction_date->toIso8601String(),
 
             'created_at' => $this->created_at->toIso8601String(),
