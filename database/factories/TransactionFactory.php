@@ -18,6 +18,27 @@ class TransactionFactory extends Factory
      */
     public function definition(): array
     {
+        $type = fake()->randomElement(TransactionType::cases());
+
+        if ($type === TransactionType::EXPENSE) {
+            $category = fake()->randomElement([
+                'Alimentação',
+                'Transporte',
+                'Lazer',
+                'Moradia',
+                'Saúde',
+                'Outros',
+            ]);
+        } else {
+            $category = fake()->randomElement([
+                'Salário',
+                'Freelance',
+                'Investimentos',
+                'Presente',
+                'Outros',
+            ]);
+        }
+
         return [
             'user_id' => User::factory(),
 
@@ -29,7 +50,9 @@ class TransactionFactory extends Factory
 
             'amount' => fake()->randomFloat(2, 5, 1000),
 
-            'type' => fake()->randomElement(TransactionType::cases()),
+            'type' => $type,
+
+            'category' => $category,
 
             'transaction_date' => fake()->dateTimeBetween('-1 year', 'now'),
         ];

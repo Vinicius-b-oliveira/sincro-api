@@ -18,6 +18,8 @@ class GroupFactory extends Factory
             'owner_id' => User::factory(),
             'name' => fake()->words(rand(2, 4), true),
             'description' => fake()->paragraph(rand(1, 2)),
+            'members_can_add_transactions' => fake()->boolean(),
+            'members_can_invite' => fake()->boolean(),
         ];
     }
 }

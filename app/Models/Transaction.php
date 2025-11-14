@@ -50,6 +50,7 @@ class Transaction extends Model
         'amount',
         'type',
         'transaction_date',
+        'category',
     ];
 
     protected $casts = [

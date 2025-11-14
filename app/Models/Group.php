@@ -44,6 +44,13 @@ class Group extends Model
         'owner_id',
         'name',
         'description',
+        'members_can_add_transactions',
+        'members_can_invite',
+    ];
+
+    protected $casts = [
+        'members_can_add_transactions' => 'boolean',
+        'members_can_invite' => 'boolean',
     ];
 
     /**
