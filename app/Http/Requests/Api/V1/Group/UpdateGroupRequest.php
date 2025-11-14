@@ -16,6 +16,8 @@ class UpdateGroupRequest extends FormRequest
         return [
             'name' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|nullable|string',
+            'members_can_add_transactions' => 'sometimes|boolean',
+            'members_can_invite' => 'sometimes|boolean',
         ];
     }
 }

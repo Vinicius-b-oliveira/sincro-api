@@ -18,6 +18,9 @@ class GroupResource extends JsonResource
             'description' => $this->description,
             'owner' => new UserResource($this->whenLoaded('owner')),
 
+            'members_can_add_transactions' => $this->members_can_add_transactions,
+            'members_can_invite' => $this->members_can_invite,
+
             'members_count' => $this->whenCounted('members'),
 
             'created_at' => $this->created_at->toIso8601String(),
