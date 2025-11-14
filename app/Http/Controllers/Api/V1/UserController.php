@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\User\UpdatePasswordRequest;
 use App\Http\Requests\Api\V1\User\UpdatePreferencesRequest;
 use App\Http\Resources\V1\User\UserResource;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -42,5 +45,22 @@ class UserController extends Controller
         ]);
 
         return new UserResource($user);
+    }
+
+    /**
+     * @group User Profile
+     * @authenticated
+     *
+     * @response 204
+     */
+    public function updatePassword(UpdatePasswordRequest $request): Response
+    {
+
+        $user = $request->user();
+        $user->update([
+            'password' => Hash::make($request->validated('new_password')),
+        ]);
+
+        return response()->noContent();
     }
 }

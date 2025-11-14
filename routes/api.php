@@ -18,6 +18,7 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user', [UserController::class, 'show']);
         Route::patch('/user/preferences', [UserController::class, 'updatePreferences']);
+        Route::patch('/user/password', [UserController::class, 'updatePassword']);
 
         Route::apiResource('transactions', TransactionController::class);
 
