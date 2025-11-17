@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AnalyticsController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\GroupController;
 use App\Http\Controllers\Api\V1\InvitationController;
@@ -19,6 +20,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/user', [UserController::class, 'show']);
         Route::patch('/user/preferences', [UserController::class, 'updatePreferences']);
         Route::patch('/user/password', [UserController::class, 'updatePassword']);
+
+        Route::get('/analytics/summary', [AnalyticsController::class, 'summary']);
 
         Route::apiResource('transactions', TransactionController::class);
 
