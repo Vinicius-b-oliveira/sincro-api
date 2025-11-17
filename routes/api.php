@@ -31,6 +31,8 @@ Route::prefix('v1')->group(function () {
         Route::patch('/groups/{group}/members/{user}', [GroupController::class, 'updateMemberRole']);
         Route::get('/groups/{group}/transactions', [TransactionController::class, 'listGroupTransactions']);
 
+        Route::get('/groups/{group}/export', [GroupController::class, 'export']);
+
         Route::post('/groups/{group}/invitations', [InvitationController::class, 'store']);
         Route::get('/invitations/pending', [InvitationController::class, 'pending']);
         Route::post('/invitations/{invitation}/accept', [InvitationController::class, 'accept']);

@@ -13,6 +13,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class GroupController extends Controller
@@ -168,5 +169,56 @@ class GroupController extends Controller
         $group->members()->detach($user->id);
 
         return response()->noContent();
+    }
+
+    /**
+     * Export group transactions as CSV
+     *
+     * @group Group Management
+     * @authenticated
+     *
+     * @response 200 {file} CSV Exported file
+     */
+    public function export(Request $request, Group $group): StreamedResponse
+    {
+        $this->authorize('export', $group);
+
+        $fileName = 'export_grupo_' . $group->id . '_' . now()->format('Ymd_His') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ];
+
+        return new StreamedResponse(function () use ($group) {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($handle, [
+                'Data',
+                'Tipo',
+                'Categoria',
+                'Titulo',
+                'Membro (Email)',
+                'Valor (R$)',
+            ]);
+
+            $group->transactions()
+                ->with('user')
+                ->chunk(200, function ($transactions) use ($handle) {
+                    foreach ($transactions as $tx) {
+                        fputcsv($handle, [
+                            $tx->transaction_date->toIso8601String(),
+                            $tx->type->value,
+                            $tx->category,
+                            $tx->title,
+                            $tx->user->email ?? 'N/A',
+                            number_format($tx->amount, 2, ',', '.'),
+                        ]);
+                    }
+                });
+
+            fclose($handle);
+        }, Response::HTTP_OK, $headers);
     }
 }

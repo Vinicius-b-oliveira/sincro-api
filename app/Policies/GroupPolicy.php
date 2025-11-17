@@ -27,6 +27,11 @@ class GroupPolicy
         return $this->isAdmin($user, $group) || $this->isOwner($user, $group);
     }
 
+    public function export(User $user, Group $group): bool
+    {
+        return $this->update($user, $group);
+    }
+
     public function delete(User $user, Group $group): bool
     {
         return $this->isOwner($user, $group);
