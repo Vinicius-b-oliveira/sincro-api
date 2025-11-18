@@ -32,6 +32,11 @@ class GroupPolicy
         return $this->update($user, $group);
     }
 
+    public function clearHistory(User $user, Group $group): bool
+    {
+        return $this->isOwner($user, $group);
+    }
+
     public function delete(User $user, Group $group): bool
     {
         return $this->isOwner($user, $group);
@@ -39,7 +44,15 @@ class GroupPolicy
 
     public function sendInvitation(User $user, Group $group): bool
     {
-        return $this->isAdmin($user, $group) || $this->isOwner($user, $group);
+        if ($this->isAdmin($user, $group) || $this->isOwner($user, $group)) {
+            return true;
+        }
+
+        if ($this->isMember($user, $group)) {
+            return $group->members_can_invite;
+        }
+
+        return false;
     }
 
     public function removeMember(User $user, Group $group, User $memberToRemove): bool

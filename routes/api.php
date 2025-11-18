@@ -32,6 +32,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/groups/{group}/transactions', [TransactionController::class, 'listGroupTransactions']);
 
         Route::get('/groups/{group}/export', [GroupController::class, 'export']);
+        Route::delete('/groups/{group}/history', [GroupController::class, 'clearHistory']);
 
         Route::post('/groups/{group}/invitations', [InvitationController::class, 'store']);
         Route::get('/invitations/pending', [InvitationController::class, 'pending']);

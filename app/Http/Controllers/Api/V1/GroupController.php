@@ -9,6 +9,7 @@ use App\Http\Requests\Api\V1\Group\UpdateMemberRoleRequest;
 use App\Http\Resources\V1\Group\GroupResource;
 use App\Http\Resources\V1\Member\MemberResource;
 use App\Models\Group;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -221,4 +222,25 @@ class GroupController extends Controller
             fclose($handle);
         }, Response::HTTP_OK, $headers);
     }
+
+    /**
+     * Clear all group transaction history
+     *
+     * @group Group Management
+     * @authenticated
+     *
+     * @response 200 { "message": "Histórico limpo com sucesso.", "transactions_deleted": 15 }
+     */
+    public function clearHistory(Request $request, Group $group)
+    {
+        $this->authorize('clearHistory', $group);
+
+        $deletedCount = Transaction::where('group_id', $group->id)->delete();
+
+        return response()->json([
+            'message' => 'Histórico limpo com sucesso.',
+            'transactions_deleted' => $deletedCount,
+        ]);
+    }
+
 }

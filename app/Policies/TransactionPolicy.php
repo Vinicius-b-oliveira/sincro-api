@@ -15,7 +15,15 @@ class TransactionPolicy
 
     public function view(User $user, Transaction $transaction): bool
     {
-        return $user->id === $transaction->user_id;
+        if ($user->id === $transaction->user_id) {
+            return true;
+        }
+
+        if (is_null($transaction->group_id)) {
+            return false;
+        }
+
+        return $user->groups()->where('group_id', $transaction->group_id)->exists();
     }
 
     public function create(User $user, ?int $group_id): bool
