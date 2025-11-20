@@ -123,7 +123,7 @@ return [
         'numbers' => 'O campo :attribute deve conter pelo menos um número.',
         'symbols' => 'O campo :attribute deve conter pelo menos um símbolo.',
         'uncompromised' => 'A senha que você inseriu em :attribute está em um vazamento de dados.'
-            .' Por favor escolha uma senha diferente.',
+            . ' Por favor escolha uma senha diferente.',
     ],
     'present' => 'O campo :attribute deve estar presente.',
     'present_if' => 'O campo :attribute deve estar presente quando :other for :value.',
@@ -178,10 +178,22 @@ return [
             'rule-name' => 'custom-message',
         ],
         'email' => [
-            'unique' => 'O E-mail digitado já está em uso',
+            'unique' => 'Este e-mail já está cadastrado no sistema',
+            'required' => 'O e-mail é obrigatório',
+            'email' => 'Digite um e-mail válido',
         ],
         'password' => [
-            'confirmed' => 'As senhas não são iguais',
+            'confirmed' => 'A confirmação da senha não confere com a senha informada',
+            'required' => 'A senha é obrigatória',
+            'min' => 'A senha deve ter no mínimo :min caracteres',
+        ],
+        'password_confirmation' => [
+            'required' => 'A confirmação da senha é obrigatória',
+            'min' => 'A confirmação da senha deve ter no mínimo :min caracteres',
+        ],
+        'name' => [
+            'required' => 'O nome é obrigatório',
+            'max' => 'O nome não pode ter mais de :max caracteres',
         ],
     ],
 
