@@ -22,6 +22,8 @@ class TransactionResource extends JsonResource
 
             'category' => $this->category,
 
+            'user_name' => $this->user->name,
+
             'transaction_date' => $this->transaction_date->toIso8601String(),
 
             'created_at' => $this->created_at->toIso8601String(),

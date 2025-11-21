@@ -61,7 +61,7 @@ class TransactionController extends Controller
             $q->where('transaction_date', '<=', $dateEnd);
         });
 
-        $transactions = $query->latest('transaction_date')->paginate();
+        $transactions = $query->with('user')->latest('transaction_date')->paginate();
 
         return TransactionResource::collection($transactions);
     }
@@ -82,6 +82,7 @@ class TransactionController extends Controller
         $this->authorize('create', [Transaction::class, $validated['group_id'] ?? null]);
 
         $transaction = $request->user()->transactions()->create($validated);
+        $transaction->load('user');
 
         return (new TransactionResource($transaction))
             ->response()
@@ -102,6 +103,7 @@ class TransactionController extends Controller
         $this->authorize('viewGroupTransactions', $group);
 
         $transactions = Transaction::where('group_id', $group->id)
+            ->with('user')
             ->latest('transaction_date')
             ->paginate();
 
@@ -122,6 +124,7 @@ class TransactionController extends Controller
     public function show(Transaction $transaction)
     {
         $this->authorize('view', $transaction);
+        $transaction->load('user');
 
         return new TransactionResource($transaction);
     }
@@ -142,6 +145,7 @@ class TransactionController extends Controller
         $this->authorize('update', $transaction);
 
         $transaction->update($request->validated());
+        $transaction->load('user');
 
         return new TransactionResource($transaction);
     }
