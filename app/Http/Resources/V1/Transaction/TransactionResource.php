@@ -16,17 +16,22 @@ class TransactionResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
 
-            'amount' => number_format($this->amount, 2, '.', ''),
+            'amount' => (float) $this->amount,
 
             'type' => $this->type->value,
 
             'category' => $this->category,
 
-            'user_name' => $this->user->name,
-
             'transaction_date' => $this->transaction_date->toIso8601String(),
 
             'created_at' => $this->created_at->toIso8601String(),
+
+            'user_id' => $this->user_id,
+            'user_name' => $this->user->name,
+
+            'group_id' => $this->group_id,
+
+            'group_name' => $this->group?->name,
         ];
     }
 }
