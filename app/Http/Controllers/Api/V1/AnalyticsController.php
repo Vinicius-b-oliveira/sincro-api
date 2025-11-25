@@ -31,11 +31,15 @@ class AnalyticsController extends Controller
         $query->whereBetween('transaction_date', [$dateStart, $dateEnd]);
 
         $chartData = (clone $query)
-        ->where('type', 'expense')
+            ->where('type', 'expense')
             ->select('category', DB::raw('SUM(amount) as total'))
             ->groupBy('category')
             ->orderBy('total', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($item) {
+                $item->total = (float) $item->total;
+                return $item;
+            });
 
         $statsQuery = (clone $query)->where('type', 'expense');
 
@@ -45,10 +49,10 @@ class AnalyticsController extends Controller
         $minSpent = $statsQuery->min('amount');
 
         $summaryStats = [
-            'total_spent' => number_format($totalSpent, 2, '.', ''),
-            'monthly_average' => number_format($monthlyAverage, 2, '.', ''),
-            'max_spent' => number_format($maxSpent, 2, '.', ''),
-            'min_spent' => number_format($minSpent, 2, '.', ''),
+            'total_spent' => (float) $totalSpent,
+            'monthly_average' => (float) $monthlyAverage,
+            'max_spent' => (float) ($maxSpent ?? 0),
+            'min_spent' => (float) ($minSpent ?? 0),
         ];
 
         return new SummaryResource([
