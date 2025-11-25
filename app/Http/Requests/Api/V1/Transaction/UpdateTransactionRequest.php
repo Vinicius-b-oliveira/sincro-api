@@ -21,6 +21,7 @@ class UpdateTransactionRequest extends FormRequest
             'description' => 'sometimes|nullable|string',
             'amount' => 'sometimes|required|numeric|min:0.01',
             'type' => ['sometimes', 'required', Rule::enum(TransactionType::class)],
+            'category' => 'sometimes|nullable|string|max:255',
             'transaction_date' => 'sometimes|required|date',
         ];
     }
