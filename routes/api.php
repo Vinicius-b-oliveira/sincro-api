@@ -22,6 +22,7 @@ Route::prefix('v1')->group(function () {
         Route::patch('/user/preferences', [UserController::class, 'updatePreferences']);
         Route::patch('/user/password', [UserController::class, 'updatePassword']);
 
+        Route::get('/balance', [AnalyticsController::class, 'balance']);
         Route::get('/analytics/summary', [AnalyticsController::class, 'summary']);
 
         Route::apiResource('transactions', TransactionController::class);

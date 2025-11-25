@@ -7,11 +7,85 @@ use App\Http\Requests\Api\V1\Analytics\GetSummaryRequest;
 use App\Http\Resources\V1\Analytics\SummaryResource;
 use App\Models\Group;
 use App\Models\Transaction;
+use App\Enums\TransactionType;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AnalyticsController extends Controller
 {
+    /**
+     * Get balance summary
+     *
+     * This endpoint serves exclusively to feed the summary cards of the Home and Group Top screens.
+     * Returns the current balance, period income and expenses for either personal finances or a specific group.
+     *
+     * @group Analytics
+     * @authenticated
+     *
+     * @queryParam group_id integer optional Group ID to filter balance by specific group. When omitted, returns personal balance (transactions without group). Example: 1
+     *
+     * @response 200 scenario="Personal balance" {
+     *   "total_balance": 1250.50,
+     *   "period_income": 3000.00,
+     *   "period_expenses": 1749.50
+     * }
+     *
+     * @response 200 scenario="Group balance" {
+     *   "total_balance": 2500.75,
+     *   "period_income": 5000.00,
+     *   "period_expenses": 2499.25
+     * }
+     *
+     * @response 403 scenario="Unauthorized group access" {
+     *   "message": "This action is unauthorized."
+     * }
+     */
+    public function balance(Request $request)
+    {
+        $user = $request->user();
+        $groupId = $request->query('group_id');
+
+        $query = $this->buildBalanceQuery($user, $groupId);
+
+        $totalIncomeAllTime = (clone $query)->where('type', TransactionType::INCOME)->sum('amount');
+        $totalExpensesAllTime = (clone $query)->where('type', TransactionType::EXPENSE)->sum('amount');
+        $totalBalance = $totalIncomeAllTime - $totalExpensesAllTime;
+
+        $currentMonth = Carbon::now();
+        $startOfMonth = $currentMonth->copy()->startOfMonth();
+        $endOfMonth = $currentMonth->copy()->endOfMonth();
+
+        $periodIncomeQuery = (clone $query)
+            ->where('type', TransactionType::INCOME)
+            ->whereBetween('transaction_date', [$startOfMonth, $endOfMonth]);
+
+        $periodExpensesQuery = (clone $query)
+            ->where('type', TransactionType::EXPENSE)
+            ->whereBetween('transaction_date', [$startOfMonth, $endOfMonth]);
+
+        $periodIncome = $periodIncomeQuery->sum('amount');
+        $periodExpenses = $periodExpensesQuery->sum('amount');
+
+        return response()->json([
+            'total_balance' => (float) $totalBalance,
+            'period_income' => (float) $periodIncome,
+            'period_expenses' => (float) $periodExpenses,
+        ]);
+    }
+
+    private function buildBalanceQuery($user, $groupId = null)
+    {
+        if ($groupId) {
+            $group = Group::findOrFail($groupId);
+            $this->authorize('view', $group);
+
+            return Transaction::where('group_id', $group->id);
+        }
+
+        return $user->transactions()->whereNull('group_id');
+    }
+
     /**
      * Get analytics summary
      *
