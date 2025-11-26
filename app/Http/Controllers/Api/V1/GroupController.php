@@ -13,6 +13,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
@@ -58,8 +59,19 @@ class GroupController extends Controller
         $user = $request->user();
 
         $group = DB::transaction(function () use ($validated, $user) {
+            $initialMembers = $validated['initial_members'] ?? [];
+            unset($validated['initial_members']);
+
             $group = $user->ownedGroups()->create($validated);
             $group->members()->attach($user->id, ['role' => 'admin']);
+
+            foreach ($initialMembers as $email) {
+                $group->invitations()->create([
+                    'inviter_id' => $user->id,
+                    'email' => $email,
+                    'token' => Str::uuid(),
+                ]);
+            }
 
             return $group;
         });

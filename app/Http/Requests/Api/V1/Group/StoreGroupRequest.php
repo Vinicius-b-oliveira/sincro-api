@@ -16,6 +16,8 @@ class StoreGroupRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'initial_members' => 'nullable|array',
+            'initial_members.*' => 'email',
         ];
     }
 }
