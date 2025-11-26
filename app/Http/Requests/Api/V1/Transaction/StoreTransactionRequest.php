@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1\Transaction;
 
+use App\Enums\TransactionCategory;
 use App\Enums\TransactionType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -21,6 +22,7 @@ class StoreTransactionRequest extends FormRequest
             'description' => 'nullable|string',
             'amount' => 'required|numeric|min:0.01',
             'type' => ['required', Rule::enum(TransactionType::class)],
+            'category' => ['required', Rule::enum(TransactionCategory::class)],
             'transaction_date' => 'required|date',
         ];
     }

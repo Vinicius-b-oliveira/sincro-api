@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\TransactionCategory;
 use App\Enums\TransactionType;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,22 +22,9 @@ class TransactionFactory extends Factory
         $type = fake()->randomElement(TransactionType::cases());
 
         if ($type === TransactionType::EXPENSE) {
-            $category = fake()->randomElement([
-                'Alimentação',
-                'Transporte',
-                'Lazer',
-                'Moradia',
-                'Saúde',
-                'Outros',
-            ]);
+            $category = fake()->randomElement(TransactionCategory::expense());
         } else {
-            $category = fake()->randomElement([
-                'Salário',
-                'Freelance',
-                'Investimentos',
-                'Presente',
-                'Outros',
-            ]);
+            $category = fake()->randomElement(TransactionCategory::income());
         }
 
         return [
