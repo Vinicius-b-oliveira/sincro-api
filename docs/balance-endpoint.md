@@ -7,44 +7,39 @@ O endpoint `/api/v1/balance` foi implementado para fornecer dados para os cards 
 ## Funcionalidades
 
 ### 1. Balance Pessoal (Home)
-
 **Requisição:** `GET /api/v1/balance`
 
 Retorna o saldo pessoal do usuário logado (transações sem grupo):
-
--   `total_balance`: Saldo acumulado de todas as transações pessoais
--   `period_income`: Receitas do mês atual
--   `period_expenses`: Despesas do mês atual
+- `total_balance`: Saldo acumulado de todas as transações pessoais
+- `period_income`: Total de receitas acumuladas
+- `period_expenses`: Total de despesas acumuladas
 
 ### 2. Balance do Grupo
-
 **Requisição:** `GET /api/v1/balance?group_id=1`
 
 Retorna o saldo de um grupo específico:
-
--   `total_balance`: Saldo acumulado de todas as transações do grupo
--   `period_income`: Receitas do grupo no mês atual
--   `period_expenses`: Despesas do grupo no mês atual
+- `total_balance`: Saldo acumulado de todas as transações do grupo
+- `period_income`: Total de receitas do grupo acumuladas
+- `period_expenses`: Total de despesas do grupo acumuladas
 
 ## Contrato da API
 
 ### Response Schema
-
 ```json
 {
-    "total_balance": 1250.5,
-    "period_income": 3000.0,
-    "period_expenses": 1749.5
+  "total_balance": 1250.50,
+  "period_income": 3000.00,
+  "period_expenses": 1749.50
 }
 ```
 
 ### Campos
 
-| Campo             | Tipo  | Descrição                                   |
-| ----------------- | ----- | ------------------------------------------- |
-| `total_balance`   | float | Saldo total acumulado (receitas - despesas) |
-| `period_income`   | float | Total de receitas no mês atual              |
-| `period_expenses` | float | Total de despesas no mês atual              |
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `total_balance` | float | Saldo total acumulado (receitas - despesas) |
+| `period_income` | float | Total de receitas acumuladas |
+| `period_expenses` | float | Total de despesas acumuladas |
 
 ## Exemplos de Uso
 

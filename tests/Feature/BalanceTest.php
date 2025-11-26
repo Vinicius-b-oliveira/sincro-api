@@ -50,8 +50,8 @@ class BalanceTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'total_balance' => 1250.00, // (1000 + 500) - 250
-                'period_income' => 1000.00, // Only current month income
-                'period_expenses' => 250.00, // Only current month expenses
+                'period_income' => 1500.00, // All time income (1000 + 500)
+                'period_expenses' => 250.00, // All time expenses
             ]);
     }
 
@@ -59,10 +59,10 @@ class BalanceTest extends TestCase
     {
         $user = User::factory()->create();
         $group = Group::factory()->create(['owner_id' => $user->id]);
-
+        
         // Add user as member to the group
         $group->members()->attach($user->id, ['role' => 'admin']);
-
+        
         Sanctum::actingAs($user);
 
         // Create group transactions
@@ -82,6 +82,15 @@ class BalanceTest extends TestCase
             'transaction_date' => now()->startOfMonth(),
         ]);
 
+        // Old group transaction
+        Transaction::factory()->create([
+            'user_id' => $user->id,
+            'group_id' => $group->id,
+            'type' => TransactionType::INCOME,
+            'amount' => 1000.00,
+            'transaction_date' => now()->subMonth(),
+        ]);
+
         // Personal transaction (should not be included in group balance)
         Transaction::factory()->create([
             'user_id' => $user->id,
@@ -95,13 +104,11 @@ class BalanceTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'total_balance' => 1500.00, // 2000 - 500 (only group transactions)
-                'period_income' => 2000.00,
+                'total_balance' => 2500.00, // 2000 + 1000 - 500
+                'period_income' => 3000.00, // 2000 + 1000
                 'period_expenses' => 500.00,
             ]);
-    }
-
-    public function test_unauthorized_user_cannot_access_balance()
+    }    public function test_unauthorized_user_cannot_access_balance()
     {
         $response = $this->getJson('/api/v1/balance');
 

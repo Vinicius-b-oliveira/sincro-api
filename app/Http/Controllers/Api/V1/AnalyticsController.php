@@ -14,15 +14,15 @@ use Illuminate\Support\Facades\DB;
 
 class AnalyticsController extends Controller
 {
-    /**
+        /**
      * Get balance summary
      *
      * This endpoint serves exclusively to feed the summary cards of the Home and Group Top screens.
-     * Returns the current balance, period income and expenses for either personal finances or a specific group.
+     * Returns the current balance, total income and expenses for either personal finances or a specific group.
      *
      * @group Analytics
      * @authenticated
-     *
+     * 
      * @queryParam group_id integer optional Group ID to filter balance by specific group. When omitted, returns personal balance (transactions without group). Example: 1
      *
      * @response 200 scenario="Personal balance" {
@@ -30,13 +30,13 @@ class AnalyticsController extends Controller
      *   "period_income": 3000.00,
      *   "period_expenses": 1749.50
      * }
-     *
+     * 
      * @response 200 scenario="Group balance" {
      *   "total_balance": 2500.75,
      *   "period_income": 5000.00,
      *   "period_expenses": 2499.25
      * }
-     *
+     * 
      * @response 403 scenario="Unauthorized group access" {
      *   "message": "This action is unauthorized."
      * }
@@ -45,32 +45,19 @@ class AnalyticsController extends Controller
     {
         $user = $request->user();
         $groupId = $request->query('group_id');
-
+        
+        // Build query for transactions
         $query = $this->buildBalanceQuery($user, $groupId);
-
+        
+        // Calculate total balance (all time)
         $totalIncomeAllTime = (clone $query)->where('type', TransactionType::INCOME)->sum('amount');
         $totalExpensesAllTime = (clone $query)->where('type', TransactionType::EXPENSE)->sum('amount');
         $totalBalance = $totalIncomeAllTime - $totalExpensesAllTime;
-
-        $currentMonth = Carbon::now();
-        $startOfMonth = $currentMonth->copy()->startOfMonth();
-        $endOfMonth = $currentMonth->copy()->endOfMonth();
-
-        $periodIncomeQuery = (clone $query)
-            ->where('type', TransactionType::INCOME)
-            ->whereBetween('transaction_date', [$startOfMonth, $endOfMonth]);
-
-        $periodExpensesQuery = (clone $query)
-            ->where('type', TransactionType::EXPENSE)
-            ->whereBetween('transaction_date', [$startOfMonth, $endOfMonth]);
-
-        $periodIncome = $periodIncomeQuery->sum('amount');
-        $periodExpenses = $periodExpensesQuery->sum('amount');
-
+        
         return response()->json([
             'total_balance' => (float) $totalBalance,
-            'period_income' => (float) $periodIncome,
-            'period_expenses' => (float) $periodExpenses,
+            'period_income' => (float) $totalIncomeAllTime,
+            'period_expenses' => (float) $totalExpensesAllTime,
         ]);
     }
 
