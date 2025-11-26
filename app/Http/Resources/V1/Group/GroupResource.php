@@ -12,10 +12,27 @@ class GroupResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $user = $request->user();
+        $role = null;
+
+        if ($user) {
+            if ($this->owner_id === $user->id) {
+                $role = 'owner';
+            } elseif ($this->pivot && isset($this->pivot->role)) {
+                $role = $this->pivot->role;
+            } else {
+                $member = $this->members()->where('user_id', $user->id)->first();
+                if ($member) {
+                    $role = $member->pivot->role;
+                }
+            }
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'role' => $role,
             'owner' => new UserResource($this->whenLoaded('owner')),
 
             'members_can_add_transactions' => $this->members_can_add_transactions,
